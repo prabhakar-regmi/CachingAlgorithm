@@ -1,1 +1,0 @@
-C:\repos\CachingAlgorithm\CachingAlgorithm\Unit Test\Debug\Unit Test.vcxproj.CopyComplete
