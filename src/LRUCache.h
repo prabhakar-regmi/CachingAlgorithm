@@ -10,7 +10,7 @@ public:
     ~LRUCache();
     std::pair<DataType, bool> Get(std::string key);
     void Put(std::string key, DataType value);
-    int Capacity() const { return size_; }
+    int Capacity() const { return capacity_; }
     int Size() const { return static_cast<int>(hash_map_.size()); }
 
 private:
@@ -34,18 +34,18 @@ private:
     std::unordered_map<std::string, Data> hash_map_;
     Node* head_ = nullptr;
     Node* tail_ = nullptr;
-    const int size_ = -1;
+    const int capacity_ = -1;
 };
 
 // The templated class members have to be implemented in the .h file itself
 // This is because compiler needs to see the code in order to instantiate templates.
-template <typename T>
-LRUCache<T>::LRUCache(int capacity) : size_(capacity) {
-    if (size_ < 3) throw "Error: Can't initialize with capacity less than 3";
+template <typename DataType>
+LRUCache<DataType>::LRUCache(int capacity) : capacity_(capacity) {
+    if (Capacity() < 3) throw "Error: Can't initialize with capacity less than 3";
 }
 
-template<typename T>
-inline LRUCache<T>::~LRUCache()
+template<typename DataType>
+inline LRUCache<DataType>::~LRUCache()
 {
     for (Node* curr = head_; curr != nullptr; )
     {
@@ -58,8 +58,8 @@ inline LRUCache<T>::~LRUCache()
     }
 }
 
-template <typename T>
-void LRUCache<T>::PutNodeAtHead(Node* curr_node)
+template <typename DataType>
+void LRUCache<DataType>::PutNodeAtHead(Node* curr_node)
 {
     if (curr_node == head_) return;
 
@@ -86,8 +86,8 @@ inline void LRUCache<DataType>::PutNewNodeAtHead(Node* new_node)
     head_ = new_node;
 }
 
-template <typename T>
-void LRUCache<T>::EvictTail()
+template <typename DataType>
+void LRUCache<DataType>::EvictTail()
 {
     if (tail_ == nullptr) throw "Error!";
     Node* retVal = tail_;
@@ -97,15 +97,15 @@ void LRUCache<T>::EvictTail()
     delete retVal;
 }
 
-template <typename T>
-std::pair<T, bool> LRUCache<T>::Get(std::string key)
+template <typename DataType>
+std::pair<DataType, bool> LRUCache<DataType>::Get(std::string key)
 {
     // Get the value from the hash_map
     auto it = hash_map_.find(key);
     if (it == hash_map_.end())
     {
         // Not found
-        T invalid;
+        DataType invalid;
         return { invalid, false };
     }
 
@@ -113,8 +113,8 @@ std::pair<T, bool> LRUCache<T>::Get(std::string key)
     return{ it->second.data_, true };
 }
 
-template<typename T>
-inline void LRUCache<T>::Put(std::string key, T value)
+template<typename DataType>
+inline void LRUCache<DataType>::Put(std::string key, DataType value)
 {
     // Check if the key is already at the hash-map
     auto it = hash_map_.find(key);
